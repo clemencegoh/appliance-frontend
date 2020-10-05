@@ -6,34 +6,21 @@ import { Appliance } from "appliances/models/ApplianceModels";
 
 import React, { useEffect } from "react";
 import api from "core/services/apiService";
+import { ListTile } from "appliances/components/ListTile";
 
 export default function DevelopmentPage() {
   const [open, setOpen] = React.useState(false);
-  const [data, setData] = React.useState<Appliance>();
+  const [data, setData] = React.useState<Appliance[]>();
 
-  // useEffect(() => {
-  //   api.get<Appliance[]>("all").then((resp) => {
-  //     console.log(resp.data);
-  //   });
-  // }, []);
+  useEffect(() => {
+    api.get<Appliance[]>("all").then((resp) => {
+      setData(resp.data);
+    });
+  }, []);
 
   return (
     <div>
-      <button
-        type="button"
-        onClick={() => {
-          setOpen(true);
-        }}
-      >
-        Open Modal
-      </button>
-      <ApplianceDetailsModal
-        modalOpen={open}
-        onClose={() => setOpen(false)}
-        onSubmit={() => {}}
-        title={"Appliance Creation"}
-        data={data}
-      />
+      <ListTile data={data ? data[0] : ({} as Appliance)} />
     </div>
   );
 }
