@@ -9,6 +9,7 @@ export default function AppliancePage(props: IAppliancePageProps) {
 
   return (
     <div>
+      Hello World!
       <main className={`mobile-view`}>
         <section className={`header-mobile-view`}>
           <section className={`section-1`}>
