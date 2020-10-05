@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Router } from "react-router";
 import { Route, Switch } from "react-router-dom";
 import logo from "./logo.svg";
 import "./App.css";
@@ -15,15 +16,17 @@ export const history = createBrowserHistory();
 function App() {
   return (
     <div className="App">
-      <Switch>
-        <Route exact path="/dev">
-          <DevelopmentPage />
-        </Route>
-        <Route path="/">
-          <AppliancePage />
-        </Route>
-      </Switch>
-      <SnackbarContainer />
+      <Router history={history}>
+        <Switch>
+          <Route exact path="/dev">
+            <DevelopmentPage />
+          </Route>
+          <Route path="/">
+            <AppliancePage />
+          </Route>
+        </Switch>
+        <SnackbarContainer />
+      </Router>
     </div>
   );
 }
