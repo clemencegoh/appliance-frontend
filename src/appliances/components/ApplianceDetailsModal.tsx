@@ -8,6 +8,7 @@ import {
   TextField,
   Paper,
   IconButton,
+  Button,
 } from "@material-ui/core";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
@@ -22,7 +23,7 @@ import { Appliance } from "appliances/models/ApplianceModels";
 export interface IApplianceDetailsModalProps {
   modalOpen: boolean;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit: (formValues: Appliance | undefined) => void;
   title: string;
   data?: Appliance;
 }
@@ -68,106 +69,117 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
             </IconButton>
           </div>
 
-          <div
-            className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
-          >
-            <Typography
-              component={"h3"}
-              className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
+          <div>
+            <div
+              className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
             >
-              Serial Number
-            </Typography>
-            <TextField
-              fullWidth
-              variant={"standard"}
-              value={formValues?.serialNumber || ""}
-              className={classes.flex3}
-              InputLabelProps={{ shrink: true }}
-              onChange={(e) => setFormItem("serialNumber", e.target.value)}
-            />
-          </div>
-          <div
-            className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
-          >
-            <Typography
-              component={"h3"}
-              className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
+              <Typography
+                component={"h3"}
+                className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
+              >
+                Serial Number
+              </Typography>
+              <TextField
+                fullWidth
+                variant={"standard"}
+                value={formValues?.serialNumber || ""}
+                className={classes.flex3}
+                InputLabelProps={{ shrink: true }}
+                onChange={(e) => setFormItem("serialNumber", e.target.value)}
+              />
+            </div>
+            <div
+              className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
             >
-              Brand
-            </Typography>
-            <TextField
-              fullWidth
-              variant={"standard"}
-              value={formValues?.brand || ""}
-              className={classes.flex3}
-              InputLabelProps={{ shrink: true }}
-              onChange={(e) => setFormItem("brand", e.target.value)}
-            />
-          </div>
-          <div
-            className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
-          >
-            <Typography
-              component={"h3"}
-              className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
+              <Typography
+                component={"h3"}
+                className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
+              >
+                Brand
+              </Typography>
+              <TextField
+                fullWidth
+                variant={"standard"}
+                value={formValues?.brand || ""}
+                className={classes.flex3}
+                InputLabelProps={{ shrink: true }}
+                onChange={(e) => setFormItem("brand", e.target.value)}
+              />
+            </div>
+            <div
+              className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
             >
-              Model
-            </Typography>
-            <TextField
-              fullWidth
-              variant={"standard"}
-              className={classes.flex3}
-              value={formValues?.model || ""}
-              InputLabelProps={{ shrink: true }}
-              onChange={(e) => setFormItem("model", e.target.value)}
-            />
-          </div>
-          <div
-            className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
-          >
-            <Typography
-              component={"h3"}
-              className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
+              <Typography
+                component={"h3"}
+                className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
+              >
+                Model
+              </Typography>
+              <TextField
+                fullWidth
+                variant={"standard"}
+                className={classes.flex3}
+                value={formValues?.model || ""}
+                InputLabelProps={{ shrink: true }}
+                onChange={(e) => setFormItem("model", e.target.value)}
+              />
+            </div>
+            <div
+              className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
             >
-              Status
-            </Typography>
-            <TextField
-              fullWidth
-              variant={"standard"}
-              value={formValues?.status || ""}
-              className={classes.flex3}
-              InputLabelProps={{ shrink: true }}
-              onChange={(e) => setFormItem("status", e.target.value)}
-            />
+              <Typography
+                component={"h3"}
+                className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
+              >
+                Status
+              </Typography>
+              <TextField
+                fullWidth
+                variant={"standard"}
+                value={formValues?.status || ""}
+                className={classes.flex3}
+                InputLabelProps={{ shrink: true }}
+                onChange={(e) => setFormItem("status", e.target.value)}
+              />
+            </div>
+
+            <div
+              className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
+            >
+              <Typography
+                component={"h3"}
+                className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
+              >
+                Date Bought
+              </Typography>
+              <div className={classes.flex3}>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <KeyboardDatePicker
+                    fullWidth
+                    disableToolbar
+                    variant={"inline"}
+                    format="MM/dd/yyyy"
+                    margin="normal"
+                    value={formValues?.dateBought}
+                    onChange={(date: Date | null) =>
+                      setFormItem("dateBought", date)
+                    }
+                    KeyboardButtonProps={{
+                      "aria-label": "change date",
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
+              </div>
+            </div>
           </div>
 
-          <div
-            className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
-          >
-            <Typography
-              component={"h3"}
-              className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
+          <div className={classes.actionBar}>
+            <Button
+              variant={"contained"}
+              onClick={(e) => props.onSubmit(formValues)}
             >
-              Date Bought
-            </Typography>
-            <div className={classes.flex3}>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  fullWidth
-                  disableToolbar
-                  variant={"inline"}
-                  format="MM/dd/yyyy"
-                  margin="normal"
-                  value={formValues?.dateBought}
-                  onChange={(date: Date | null) =>
-                    setFormItem("dateBought", date)
-                  }
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                />
-              </MuiPickersUtilsProvider>
-            </div>
+              Save
+            </Button>
           </div>
         </Paper>
       </Zoom>
@@ -221,5 +233,9 @@ const useStyles = makeStyles({
   },
   bolder: {
     fontWeight: "bold",
+  },
+  actionBar: {
+    display: "flex",
+    justifyContent: "flex-end",
   },
 });
