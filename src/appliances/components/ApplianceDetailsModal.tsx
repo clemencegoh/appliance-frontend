@@ -56,7 +56,9 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
         style={{ transitionDelay: props.modalOpen ? "200ms" : "0ms" }}
       >
         <Paper className={`${classes.widerModal} ${classes.scrollingCard}`}>
-          <div className={`${classes.flexed} ${classes.cardHeader}`}>
+          <div
+            className={`${classes.flexed} ${classes.cardHeader} ${classes.almostFullWidth}`}
+          >
             <span />
             <Typography
               component={"h2"}
@@ -69,10 +71,8 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
             </IconButton>
           </div>
 
-          <div>
-            <div
-              className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
-            >
+          <div className={`${classes.almostFullWidth}`}>
+            <div className={`${classes.marginTopBottom} ${classes.flexed}`}>
               <Typography
                 component={"h3"}
                 className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
@@ -88,9 +88,7 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
                 onChange={(e) => setFormItem("serialNumber", e.target.value)}
               />
             </div>
-            <div
-              className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
-            >
+            <div className={`${classes.marginTopBottom} ${classes.flexed}`}>
               <Typography
                 component={"h3"}
                 className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
@@ -106,9 +104,7 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
                 onChange={(e) => setFormItem("brand", e.target.value)}
               />
             </div>
-            <div
-              className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
-            >
+            <div className={`${classes.marginTopBottom} ${classes.flexed}`}>
               <Typography
                 component={"h3"}
                 className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
@@ -124,9 +120,7 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
                 onChange={(e) => setFormItem("model", e.target.value)}
               />
             </div>
-            <div
-              className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
-            >
+            <div className={`${classes.marginTopBottom} ${classes.flexed}`}>
               <Typography
                 component={"h3"}
                 className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
@@ -143,9 +137,7 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
               />
             </div>
 
-            <div
-              className={`${classes.marginTopBottom} ${classes.flexed} ${classes.almostFullWidth}`}
-            >
+            <div className={`${classes.marginTopBottom} ${classes.flexed}`}>
               <Typography
                 component={"h3"}
                 className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
@@ -173,10 +165,22 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
             </div>
           </div>
 
-          <div className={classes.actionBar}>
+          <div className={`${classes.actionBar} ${classes.almostFullWidth}`}>
             <Button
               variant={"contained"}
-              onClick={(e) => props.onSubmit(formValues)}
+              color={"secondary"}
+              onClick={(e) => props.onClose()}
+              className={classes.buttonMargin}
+            >
+              Close
+            </Button>
+            <Button
+              variant={"contained"}
+              color={"primary"}
+              onClick={(e) => {
+                props.onSubmit(formValues);
+                props.onClose();
+              }}
             >
               Save
             </Button>
@@ -197,9 +201,8 @@ const useStyles = makeStyles({
     overflowY: "auto",
   },
   cardHeader: {
-    width: "100%",
     display: "flex",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     flexWrap: "wrap-reverse",
   },
   alignedItems: {
@@ -237,5 +240,9 @@ const useStyles = makeStyles({
   actionBar: {
     display: "flex",
     justifyContent: "flex-end",
+    margin: "1rem 0",
+  },
+  buttonMargin: {
+    marginRight: "1rem",
   },
 });
