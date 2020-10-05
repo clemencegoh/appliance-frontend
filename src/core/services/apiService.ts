@@ -1,9 +1,8 @@
-import { history } from "App";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { config } from "rxjs";
 
 const api = axios.create({
-  baseURL: "/",
+  baseURL: "/appliances/",
   timeout: 5000,
 });
 
@@ -49,3 +48,6 @@ function getErrorMessage(error: AxiosError): string {
       return error.message;
   }
 }
+
+export default api;
+export { api };
