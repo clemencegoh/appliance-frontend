@@ -16,7 +16,7 @@ export default function DevelopmentPage() {
   const [currentPage, setCurrentPage] = React.useState<number>(0);
 
   useEffect(() => {
-    api.get<Appliance[]>("all").then((resp) => {
+    api.get<Appliance[]>("appliances/all").then((resp) => {
       setData(resp.data);
     });
   }, []);
@@ -35,7 +35,7 @@ export default function DevelopmentPage() {
       >
         <ListTile data={(data && data[0]) || ({} as Appliance)} />
       </div>
-      <CustomTable
+      {/* <CustomTable
         currentPage={currentPage}
         onPage={(pageIndex, rowsPerPage) => setCurrentPage(pageIndex)}
         data={data || []}
@@ -78,7 +78,7 @@ export default function DevelopmentPage() {
             ),
           },
         ]}
-      />
+      /> */}
     </div>
   );
 }

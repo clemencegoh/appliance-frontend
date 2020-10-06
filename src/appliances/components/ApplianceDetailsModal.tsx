@@ -37,12 +37,28 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
 
   React.useEffect(() => {
     setFormValues(props.data);
+    if (!props.data) {
+      /**
+       * Set defaults
+       */
+      setFormValues({
+        serialNumber: "",
+        brand: "",
+        model: "",
+        dateBought: new Date().toISOString(),
+        status: "Available",
+      });
+    }
   }, [props]);
 
   const setFormItem = (fieldName: string, value: any) => {
+    let parsed = value;
+    if (fieldName === "dateBought") {
+      parsed = (value as Date).toISOString();
+    }
     setFormValues({
       ...formValues,
-      [fieldName]: value,
+      [fieldName]: parsed,
     } as Appliance);
   };
 
@@ -165,7 +181,6 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
                     value={formValues?.dateBought}
                     onChange={(date: Date | null) => {
                       setFormItem("dateBought", date);
-                      console.log("setting as", date);
                     }}
                     KeyboardButtonProps={{
                       "aria-label": "change date",

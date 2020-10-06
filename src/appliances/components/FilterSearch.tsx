@@ -66,7 +66,10 @@ export function FilterSearch(props: IFilterSearchProps) {
               value={filterDate}
               onChange={(date: Date | null) => {
                 setFilterDate(date);
-                searchAndLoad(filterOption, date);
+                searchAndLoad(
+                  filterOption,
+                  (date && date.toISOString()) || new Date().toISOString()
+                );
               }}
               KeyboardButtonProps={{
                 "aria-label": "change date",
@@ -105,7 +108,7 @@ export function FilterSearch(props: IFilterSearchProps) {
             value={filterText}
             onChange={(e) => {
               setFilterText(e.target.value);
-              searchAndLoad(filterOption, filterText);
+              searchAndLoad(filterOption, e.target.value);
             }}
             classes={{ root: classes.flex1 }}
             InputProps={{

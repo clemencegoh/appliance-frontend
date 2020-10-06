@@ -12,6 +12,7 @@ import {
   TablePagination,
   Paper,
 } from "@material-ui/core";
+import { api } from "core/services/apiService";
 
 import { KeyboardArrowRight, KeyboardArrowLeft } from "@material-ui/icons";
 
@@ -25,16 +26,10 @@ export interface ICustomTableProps<T> {
   columns: ColumnDef<T>[];
   data: T[];
   currentPage: number;
+  rowsPerPage: number;
+  setRowsPerPage: (value: number) => void;
   onPage?: (pageIndex: number, rowsPerPage: number) => void;
 }
-
-const rows = [
-  {
-    name: "",
-    fat: "",
-    calories: "",
-  },
-];
 
 /**
  * Table with custom pagination
@@ -42,9 +37,22 @@ const rows = [
 export function CustomTable<T>(props: ICustomTableProps<T>) {
   const classes = useStyles2();
 
-  const { columns, data, currentPage, onPage } = props;
+  const {
+    columns,
+    data,
+    currentPage,
+    rowsPerPage,
+    setRowsPerPage,
+    onPage,
+  } = props;
 
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [dataCount, setDataCount] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    api.get("appliances/all").then((resp) => {
+      setDataCount(resp?.data?.length || 0);
+    });
+  }, []);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -116,9 +124,9 @@ export function CustomTable<T>(props: ICustomTableProps<T>) {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+              rowsPerPageOptions={[5, 10, 25, 100]}
               colSpan={99}
-              count={rows.length}
+              count={dataCount}
               rowsPerPage={rowsPerPage}
               page={currentPage}
               SelectProps={{

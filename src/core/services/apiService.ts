@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { config } from "rxjs";
 
 const api = axios.create({
-  baseURL: "/appliances/",
+  baseURL: "",
   timeout: 5000,
 });
 

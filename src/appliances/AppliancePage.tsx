@@ -12,6 +12,7 @@ import {
   Button,
   Fab,
   Table,
+  CircularProgress,
 } from "@material-ui/core";
 import { FilterList as FilterIcon, Add as AddIcon } from "@material-ui/icons";
 import { CustomTable } from "./components/CustomTable";
@@ -23,6 +24,7 @@ import { ListTile } from "./components/ListTile";
 // utils
 import { daysList, monthsList } from "core/utils/datetime";
 import { api } from "core/services/apiService";
+import { snackbar } from "core/services/snackbarService";
 
 // styles
 import {
@@ -54,15 +56,50 @@ export default function AppliancePage(props: IAppliancePageProps) {
   >();
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [expandedSearch, setExpandedSearch] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   // data
   const [data, setData] = React.useState<Appliance[]>();
   const [currentPage, setCurrentPage] = React.useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState<number>(5);
+
+  /**
+   * Used for mobile data pagination, different way from desktop
+   */
+  const [mobileData, setMobileData] = React.useState<Appliance[]>();
+  const [fakePage, setFakePage] = React.useState<number>(0);
+  const [lastPage, setLastPage] = React.useState<boolean>(false);
+
+  function refreshData(fieldName?: string, fieldValue?: string) {
+    const query = `appliances?page=${currentPage}&numberPerPage=${rowsPerPage}${
+      (fieldName && `&${fieldName}=${fieldValue}`) || ""
+    }`;
+    api.get<Appliance[]>(query).then((resp) => {
+      setLoading(false);
+      setData(resp?.data || []);
+    });
+  }
+
+  function appendData() {
+    const query = `appliances?page=${fakePage}&numberPerPage=${10}`;
+    api.get<Appliance[]>(query).then((resp) => {
+      setLoading(false);
+      if (resp.data.length <= 0) {
+        snackbar.show("No more data to show", { severity: "warning" });
+        setLastPage(true);
+        return;
+      }
+      if (mobileData) {
+        setMobileData([...mobileData, ...resp.data]);
+      } else {
+        setMobileData(resp.data);
+      }
+    });
+  }
 
   React.useEffect(() => {
-    api.get<Appliance[]>("all").then((resp) => {
-      setData(resp.data);
-    });
+    refreshData();
+    appendData();
   }, []);
 
   // variables
@@ -107,7 +144,12 @@ export default function AppliancePage(props: IAppliancePageProps) {
           in={expandedSearch}
           style={{ transitionDelay: expandedSearch ? "200ms" : "0ms" }}
         >
-          <FilterSearch />
+          <FilterSearch
+            onLoad={() => setLoading(true)}
+            onSearch={(field, value) => {
+              refreshData(field, value);
+            }}
+          />
         </Collapse>
 
         <div className={`${mobileClasses.mobileBody}`}>
@@ -115,6 +157,28 @@ export default function AppliancePage(props: IAppliancePageProps) {
             {data?.map((item) => (
               <ListTile data={item} />
             ))}
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <Button
+                variant={"contained"}
+                color={"primary"}
+                onClick={() => {
+                  setLoading(true);
+                  if (lastPage) {
+                    snackbar.show("No more data to show", {
+                      severity: "warning",
+                    });
+                    setLoading(false);
+                  } else {
+                    setFakePage(fakePage + 1);
+                    appendData();
+                  }
+                }}
+              >
+                Load More
+              </Button>
+            )}
           </div>
           <Fab
             variant="extended"
@@ -125,8 +189,7 @@ export default function AppliancePage(props: IAppliancePageProps) {
               setModalOpen(true);
             }}
           >
-            <AddIcon className={classes.extendedIcon} />
-            <Typography className={classes.bolded}>ADD</Typography>
+            <AddIcon />
           </Fab>
         </div>
       </main>
@@ -171,7 +234,9 @@ export default function AppliancePage(props: IAppliancePageProps) {
         <div className={desktopClasses.desktopBody}>
           <CustomTable
             currentPage={currentPage}
-            onPage={(pageIndex, rowsPerPage) => setCurrentPage(pageIndex)}
+            onPage={(pageIndex, numberPerPage) => setCurrentPage(pageIndex)}
+            rowsPerPage={rowsPerPage}
+            setRowsPerPage={setRowsPerPage}
             data={data || []}
             columns={[
               {
@@ -220,11 +285,16 @@ export default function AppliancePage(props: IAppliancePageProps) {
                       Update
                     </Button>
                     <Button
-                      // onClick={() => {
-                      //   setAction(currentAction.MODIFY);
-                      //   setInitialModalData(rowData);
-                      //   setModalOpen(true);
-                      // }}
+                      onClick={() => {
+                        api.delete(`appliances/${rowData.id}`).then((resp) => {
+                          snackbar.show("Successfully deleted", {
+                            severity: "success",
+                          });
+
+                          setCurrentPage(0);
+                          refreshData();
+                        });
+                      }}
                       variant={"contained"}
                       color={"secondary"}
                       className={desktopClasses.buttonMargin}
@@ -242,7 +312,39 @@ export default function AppliancePage(props: IAppliancePageProps) {
         data={initialModalData}
         modalOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        onSubmit={(formValues: Appliance | undefined) => {}}
+        onSubmit={(formValues: Appliance | undefined) => {
+          if (action === currentAction.CREATE) {
+            formValues &&
+              api
+                .post(`appliances`, formValues)
+                .then((resp) => {
+                  snackbar.show("Successfully created", {
+                    severity: "success",
+                  });
+                  setCurrentPage(0);
+                  refreshData();
+                })
+                .catch((err) => {
+                  snackbar.show(err.message || err.msg || err, {
+                    severity: "error",
+                  });
+                });
+            return;
+          }
+          formValues &&
+            api
+              .put(`appliances/${formValues.id}`, formValues)
+              .then((resp) => {
+                snackbar.show("Successfully updated", { severity: "success" });
+                setCurrentPage(0);
+                refreshData();
+              })
+              .catch((err) => {
+                snackbar.show(err.message || err.msg || err, {
+                  severity: "error",
+                });
+              });
+        }}
         title={action}
       />
     </div>
