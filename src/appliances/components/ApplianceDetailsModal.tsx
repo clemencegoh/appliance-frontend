@@ -7,8 +7,9 @@ import {
   Typography,
   TextField,
   Paper,
-  IconButton,
   Button,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
@@ -17,7 +18,6 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-import { Close as CloseIcon } from "@material-ui/icons";
 import { Appliance } from "appliances/models/ApplianceModels";
 
 export interface IApplianceDetailsModalProps {
@@ -31,11 +31,34 @@ export interface IApplianceDetailsModalProps {
 export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
   const classes = useStyles();
 
-  const [formValues, setFormValues] = React.useState<Appliance>();
+  const [formValues, setFormValues] = React.useState<Appliance | undefined>(
+    props.data
+  );
+
+  React.useEffect(() => {
+    setFormValues(props.data);
+    if (!props.data) {
+      /**
+       * Set defaults
+       */
+      setFormValues({
+        serialNumber: "",
+        brand: "",
+        model: "",
+        dateBought: new Date().toISOString(),
+        status: "Available",
+      });
+    }
+  }, [props]);
+
   const setFormItem = (fieldName: string, value: any) => {
+    let parsed = value;
+    if (fieldName === "dateBought") {
+      parsed = (value as Date).toISOString();
+    }
     setFormValues({
       ...formValues,
-      [fieldName]: value,
+      [fieldName]: parsed,
     } as Appliance);
   };
 
@@ -59,36 +82,34 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
           <div
             className={`${classes.flexed} ${classes.cardHeader} ${classes.almostFullWidth}`}
           >
-            <span />
             <Typography
               component={"h2"}
               className={`${classes.slightMargin} ${classes.bolder}`}
             >
               {props.title}
             </Typography>
-            <IconButton onClick={props.onClose}>
-              <CloseIcon />
-            </IconButton>
           </div>
 
           <div className={`${classes.almostFullWidth}`}>
-            <div className={`${classes.marginTopBottom} ${classes.flexed}`}>
+            <div className={`${classes.topMargin} ${classes.flexed}`}>
               <Typography
                 component={"h3"}
-                className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
+                className={`${classes.flex1} ${classes.flexed}`}
               >
                 Serial Number
               </Typography>
               <TextField
                 fullWidth
-                variant={"standard"}
+                variant={"outlined"}
+                helperText={" "}
                 value={formValues?.serialNumber || ""}
                 className={classes.flex3}
-                InputLabelProps={{ shrink: true }}
                 onChange={(e) => setFormItem("serialNumber", e.target.value)}
               />
             </div>
-            <div className={`${classes.marginTopBottom} ${classes.flexed}`}>
+            <div
+              className={`${classes.smallTopMargin} ${classes.bottomMargin} ${classes.flexed}`}
+            >
               <Typography
                 component={"h3"}
                 className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
@@ -97,14 +118,15 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
               </Typography>
               <TextField
                 fullWidth
-                variant={"standard"}
+                variant={"outlined"}
                 value={formValues?.brand || ""}
                 className={classes.flex3}
-                InputLabelProps={{ shrink: true }}
                 onChange={(e) => setFormItem("brand", e.target.value)}
               />
             </div>
-            <div className={`${classes.marginTopBottom} ${classes.flexed}`}>
+            <div
+              className={`${classes.topMargin} ${classes.bottomMargin} ${classes.flexed}`}
+            >
               <Typography
                 component={"h3"}
                 className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
@@ -113,31 +135,35 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
               </Typography>
               <TextField
                 fullWidth
-                variant={"standard"}
+                variant={"outlined"}
                 className={classes.flex3}
                 value={formValues?.model || ""}
-                InputLabelProps={{ shrink: true }}
                 onChange={(e) => setFormItem("model", e.target.value)}
               />
             </div>
-            <div className={`${classes.marginTopBottom} ${classes.flexed}`}>
+            <div
+              className={`${classes.topMargin} ${classes.bottomMargin} ${classes.flexed}`}
+            >
               <Typography
                 component={"h3"}
                 className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
               >
                 Status
               </Typography>
-              <TextField
-                fullWidth
-                variant={"standard"}
-                value={formValues?.status || ""}
+              <Select
+                variant={"outlined"}
                 className={classes.flex3}
-                InputLabelProps={{ shrink: true }}
+                value={formValues?.status || "Available"}
                 onChange={(e) => setFormItem("status", e.target.value)}
-              />
+              >
+                <MenuItem value={"Available"}>Available</MenuItem>
+                <MenuItem value={"Sold"}>Sold</MenuItem>
+              </Select>
             </div>
 
-            <div className={`${classes.marginTopBottom} ${classes.flexed}`}>
+            <div
+              className={`${classes.topMargin} ${classes.bottomMargin} ${classes.flexed}`}
+            >
               <Typography
                 component={"h3"}
                 className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
@@ -153,12 +179,13 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
                     format="MM/dd/yyyy"
                     margin="normal"
                     value={formValues?.dateBought}
-                    onChange={(date: Date | null) =>
-                      setFormItem("dateBought", date)
-                    }
+                    onChange={(date: Date | null) => {
+                      setFormItem("dateBought", date);
+                    }}
                     KeyboardButtonProps={{
                       "aria-label": "change date",
                     }}
+                    inputVariant={"outlined"}
                   />
                 </MuiPickersUtilsProvider>
               </div>
@@ -167,12 +194,11 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
 
           <div className={`${classes.actionBar} ${classes.almostFullWidth}`}>
             <Button
-              variant={"contained"}
-              color={"secondary"}
+              variant={"outlined"}
               onClick={(e) => props.onClose()}
               className={classes.buttonMargin}
             >
-              Close
+              Cancel
             </Button>
             <Button
               variant={"contained"}
@@ -182,7 +208,7 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
                 props.onClose();
               }}
             >
-              Save
+              Submit
             </Button>
           </div>
         </Paper>
@@ -202,8 +228,7 @@ const useStyles = makeStyles({
   },
   cardHeader: {
     display: "flex",
-    justifyContent: "space-between",
-    flexWrap: "wrap-reverse",
+    justifyContent: "center",
   },
   alignedItems: {
     alignItems: "center",
@@ -220,8 +245,14 @@ const useStyles = makeStyles({
   almostFullWidth: {
     width: "80%",
   },
-  marginTopBottom: {
-    margin: "2rem 0",
+  topMargin: {
+    marginTop: "2rem",
+  },
+  smallTopMargin: {
+    marginTop: "1rem",
+  },
+  bottomMargin: {
+    marginBottom: "2rem",
   },
   widerModal: {
     minWidth: "76%",

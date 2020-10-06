@@ -3,6 +3,8 @@ export interface Appliance {
   serialNumber: string;
   brand: string;
   model: string;
-  status: string;
-  dateBought: Date;
+  status: Status;
+  dateBought: string;
 }
+
+export type Status = "Available" | "Sold";
