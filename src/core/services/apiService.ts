@@ -2,7 +2,8 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { config } from "rxjs";
 
 const api = axios.create({
-  baseURL: "https://ec2-13-212-34-182.ap-southeast-1.compute.amazonaws.com",
+  baseURL:
+    "https://cors-anywhere.herokuapp.com/ec2-13-212-34-182.ap-southeast-1.compute.amazonaws.com",
   timeout: 5000,
 });
 
