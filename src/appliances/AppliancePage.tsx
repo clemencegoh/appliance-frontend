@@ -228,7 +228,12 @@ export default function AppliancePage(props: IAppliancePageProps) {
             </Button>
           </div>
           <div className={desktopClasses.headerSection2}>
-            <FilterSearch />
+            <FilterSearch
+              onLoad={() => setLoading(true)}
+              onSearch={(field, value) => {
+                refreshData(field, value);
+              }}
+            />
           </div>
         </header>
         <div className={desktopClasses.desktopBody}>
