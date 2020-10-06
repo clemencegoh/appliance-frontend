@@ -70,8 +70,14 @@ export default function AppliancePage(props: IAppliancePageProps) {
   const [fakePage, setFakePage] = React.useState<number>(0);
   const [lastPage, setLastPage] = React.useState<boolean>(false);
 
-  function refreshData(fieldName?: string, fieldValue?: string) {
-    const query = `appliances?page=${currentPage}&numberPerPage=${rowsPerPage}${
+  function refreshData(
+    _currentPage?: number,
+    fieldName?: string,
+    fieldValue?: string
+  ) {
+    const query = `appliances?page=${
+      _currentPage || currentPage
+    }&numberPerPage=${rowsPerPage}${
       (fieldName && `&${fieldName}=${fieldValue}`) || ""
     }`;
     api.get<Appliance[]>(query).then((resp) => {
@@ -80,8 +86,8 @@ export default function AppliancePage(props: IAppliancePageProps) {
     });
   }
 
-  function appendData() {
-    const query = `appliances?page=${fakePage}&numberPerPage=${10}`;
+  function appendData(_page?: number) {
+    const query = `appliances?page=${_page || fakePage}&numberPerPage=${10}`;
     api.get<Appliance[]>(query).then((resp) => {
       setLoading(false);
       if (resp.data.length <= 0) {
@@ -147,7 +153,7 @@ export default function AppliancePage(props: IAppliancePageProps) {
           <FilterSearch
             onLoad={() => setLoading(true)}
             onSearch={(field, value) => {
-              refreshData(field, value);
+              refreshData(currentPage, field, value);
             }}
           />
         </Collapse>
@@ -172,7 +178,7 @@ export default function AppliancePage(props: IAppliancePageProps) {
                     setLoading(false);
                   } else {
                     setFakePage(fakePage + 1);
-                    appendData();
+                    appendData(fakePage + 1);
                   }
                 }}
               >
@@ -231,7 +237,7 @@ export default function AppliancePage(props: IAppliancePageProps) {
             <FilterSearch
               onLoad={() => setLoading(true)}
               onSearch={(field, value) => {
-                refreshData(field, value);
+                refreshData(currentPage, field, value);
               }}
             />
           </div>
@@ -239,7 +245,10 @@ export default function AppliancePage(props: IAppliancePageProps) {
         <div className={desktopClasses.desktopBody}>
           <CustomTable
             currentPage={currentPage}
-            onPage={(pageIndex, numberPerPage) => setCurrentPage(pageIndex)}
+            onPage={(pageIndex, numberPerPage) => {
+              setCurrentPage(pageIndex);
+              refreshData(pageIndex);
+            }}
             rowsPerPage={rowsPerPage}
             setRowsPerPage={setRowsPerPage}
             data={data || []}
