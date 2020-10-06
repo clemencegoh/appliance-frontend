@@ -73,7 +73,7 @@ export function CustomTable<T>(props: ICustomTableProps<T>) {
     return (
       <TableHead className={classes.tableHead}>
         <TableRow>
-          {columns.map((_cell, _cellIndex) => (
+          {columns?.map((_cell, _cellIndex) => (
             <TableCell
               id={_cell.header}
               key={_cellIndex}
