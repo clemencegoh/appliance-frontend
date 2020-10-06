@@ -31,9 +31,14 @@ export interface IApplianceDetailsModalProps {
 export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
   const classes = useStyles();
 
-  const [formValues, setFormValues] = React.useState<Appliance>(
-    props.data || ({} as Appliance)
+  const [formValues, setFormValues] = React.useState<Appliance | undefined>(
+    props.data
   );
+
+  React.useEffect(() => {
+    setFormValues(props.data);
+  }, [props]);
+
   const setFormItem = (fieldName: string, value: any) => {
     setFormValues({
       ...formValues,
@@ -145,7 +150,7 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
             >
               <Typography
                 component={"h3"}
-                className={`${classes.flex1} ${classes.flexed}`}
+                className={`${classes.flex1} ${classes.flexed} ${classes.alignedItems}`}
               >
                 Date Bought
               </Typography>
@@ -158,12 +163,14 @@ export function ApplianceDetailsModal(props: IApplianceDetailsModalProps) {
                     format="MM/dd/yyyy"
                     margin="normal"
                     value={formValues?.dateBought}
-                    onChange={(date: Date | null) =>
-                      setFormItem("dateBought", date)
-                    }
+                    onChange={(date: Date | null) => {
+                      setFormItem("dateBought", date);
+                      console.log("setting as", date);
+                    }}
                     KeyboardButtonProps={{
                       "aria-label": "change date",
                     }}
+                    inputVariant={"outlined"}
                   />
                 </MuiPickersUtilsProvider>
               </div>

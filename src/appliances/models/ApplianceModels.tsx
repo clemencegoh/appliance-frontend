@@ -4,7 +4,7 @@ export interface Appliance {
   brand: string;
   model: string;
   status: Status;
-  dateBought: Date;
+  dateBought: string;
 }
 
 export type Status = "Available" | "Sold";

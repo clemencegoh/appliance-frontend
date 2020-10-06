@@ -1,14 +1,8 @@
 import { makeStyles } from "@material-ui/core";
 
-export const useStyles = makeStyles({
+export const useCommonStyles = makeStyles({
   root: {
-    // backgroundImage: "linear-gradient(to top right, #f0f0f0, #a7defa)",
-
     height: "100vh",
-  },
-  headerDesktop: {
-    backgroundImage: "linear-gradient(to top right, #f0f0f0, #a7defa)",
-    height: "20vh",
   },
   bolded: {
     fontWeight: "bold",
@@ -33,24 +27,6 @@ export const useStyles = makeStyles({
     fontSize: "1rem",
     fontWeight: "bold",
   },
-  searchField: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    margin: "1em",
-  },
-  searchWrapper: {
-    padding: "4px 0",
-    width: "100vw",
-  },
-  customSelect: {
-    marginTop: "4px",
-    borderRadius: "4px 0 0 4px",
-  },
-  customTextField: {
-    flex: 1,
-    borderRadius: "0 4px 4px 0",
-  },
   callToActionButton: {},
   mainBody: {
     flex: 1,
@@ -67,4 +43,54 @@ export const useStyles = makeStyles({
   extendedIcon: {
     marginRight: "0.5rem",
   },
+});
+
+export const useDesktopStyles = makeStyles({
+  root: {
+    height: "100vh",
+  },
+  headerDesktop: {
+    // backgroundImage: "linear-gradient(to top right, #d1f9ff, #54e9ff)",
+    height: "20vh",
+    borderRadius: "0 0 0 40px",
+  },
+  desktopBody: {
+    margin: "1rem 2rem",
+  },
+  buttonMargin: {
+    marginLeft: "1rem",
+  },
+  desktopDateTime: {},
+  desktopButton: {
+    fontWeight: "bold",
+    backgroundColor: "#7dafff",
+    "&:hover": {
+      backgroundColor: "#5999ff",
+    },
+    height: "fit-content",
+  },
+  headerSection1: {
+    flex: 1,
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "2rem 2rem 0 2rem",
+  },
+  headerSection2: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
+
+export const useMobileStyles = makeStyles({
+  mobileMain: {
+    width: "92vw",
+    margin: "auto",
+  },
+  mobileBody: {
+    height: "80vh",
+    overflowY: "auto",
+  },
+  listTile: {},
 });
