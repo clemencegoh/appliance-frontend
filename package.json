@@ -2,7 +2,7 @@
   "name": "appliance-frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://ec2-13-212-34-182.ap-southeast-1.compute.amazonaws.com:8080/",
+  "proxy": "https://ec2-13-212-34-182.ap-southeast-1.compute.amazonaws.com/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

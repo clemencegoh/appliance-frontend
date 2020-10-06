@@ -4,7 +4,6 @@ import {
   Select,
   TextField,
   MenuItem,
-  Typography,
   InputLabel,
 } from "@material-ui/core";
 

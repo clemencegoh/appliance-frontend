@@ -6,12 +6,8 @@ import {
   Typography,
   useMediaQuery,
   Collapse,
-  TextField,
-  Select,
-  MenuItem,
   Button,
   Fab,
-  Table,
   CircularProgress,
 } from "@material-ui/core";
 import { FilterList as FilterIcon, Add as AddIcon } from "@material-ui/icons";
@@ -71,13 +67,11 @@ export default function AppliancePage(props: IAppliancePageProps) {
   const [lastPage, setLastPage] = React.useState<boolean>(false);
 
   function refreshData(
-    _currentPage?: number,
+    _currentPage: number,
     fieldName?: string,
     fieldValue?: string
   ) {
-    const query = `appliances?page=${
-      _currentPage || currentPage
-    }&numberPerPage=${rowsPerPage}${
+    const query = `appliances?page=${_currentPage}&numberPerPage=${rowsPerPage}${
       (fieldName && `&${fieldName}=${fieldValue}`) || ""
     }`;
     api.get<Appliance[]>(query).then((resp) => {
@@ -86,8 +80,8 @@ export default function AppliancePage(props: IAppliancePageProps) {
     });
   }
 
-  function appendData(_page?: number) {
-    const query = `appliances?page=${_page || fakePage}&numberPerPage=${10}`;
+  function appendData(_page: number) {
+    const query = `appliances?page=${_page}&numberPerPage=${5}`;
     api.get<Appliance[]>(query).then((resp) => {
       setLoading(false);
       if (resp.data.length <= 0) {
@@ -104,8 +98,8 @@ export default function AppliancePage(props: IAppliancePageProps) {
   }
 
   React.useEffect(() => {
-    refreshData();
-    appendData();
+    refreshData(0);
+    appendData(0);
   }, []);
 
   // variables
@@ -160,7 +154,7 @@ export default function AppliancePage(props: IAppliancePageProps) {
 
         <div className={`${mobileClasses.mobileBody}`}>
           <div className={mobileClasses.listTile}>
-            {data?.map((item) => (
+            {mobileData?.map((item) => (
               <ListTile data={item} />
             ))}
             {loading ? (
@@ -177,8 +171,9 @@ export default function AppliancePage(props: IAppliancePageProps) {
                     });
                     setLoading(false);
                   } else {
-                    setFakePage(fakePage + 1);
-                    appendData(fakePage + 1);
+                    const newFakePage = fakePage + 1;
+                    setFakePage(newFakePage);
+                    appendData(newFakePage);
                   }
                 }}
               >
@@ -306,7 +301,7 @@ export default function AppliancePage(props: IAppliancePageProps) {
                           });
 
                           setCurrentPage(0);
-                          refreshData();
+                          refreshData(0);
                         });
                       }}
                       variant={"contained"}
@@ -336,7 +331,7 @@ export default function AppliancePage(props: IAppliancePageProps) {
                     severity: "success",
                   });
                   setCurrentPage(0);
-                  refreshData();
+                  refreshData(0);
                 })
                 .catch((err) => {
                   snackbar.show(err.message || err.msg || err, {
@@ -351,7 +346,7 @@ export default function AppliancePage(props: IAppliancePageProps) {
               .then((resp) => {
                 snackbar.show("Successfully updated", { severity: "success" });
                 setCurrentPage(0);
-                refreshData();
+                refreshData(0);
               })
               .catch((err) => {
                 snackbar.show(err.message || err.msg || err, {
