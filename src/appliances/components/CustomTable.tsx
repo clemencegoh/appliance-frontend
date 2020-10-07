@@ -52,7 +52,7 @@ export function CustomTable<T>(props: ICustomTableProps<T>) {
     api.get("appliances/all").then((resp) => {
       setDataCount(resp?.data?.length || 0);
     });
-  }, []);
+  }, [currentPage, data]);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
