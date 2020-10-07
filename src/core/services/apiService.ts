@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 
 const api = axios.create({
-  baseURL: "https://ec2-13-212-34-182.ap-southeast-1.compute.amazonaws.com/",
+  baseURL:
+    "http://ec2-13-212-34-182.ap-southeast-1.compute.amazonaws.com:8080/",
   timeout: 5000,
 });
 
